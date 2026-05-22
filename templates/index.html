@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Карта битв Великой Отечественной Войны</title>
     <link rel="stylesheet" href="/static/style_main.css">
-    <script src="https://api-maps.yandex.ru/2.1/?apikey={{ yandex_maps_api_key }}&lang=ru_RU" type="text/javascript"></script>
 </head>
 <body>
 <div class="container">
@@ -28,10 +27,16 @@
         <p>Великие сражения и выдающиеся военачальники — память на века</p>
     </div>
     <div class="content">
-        <div class="area-label">🗺️ ИНТЕРАКТИВНАЯ КАРТА СРАЖЕНИЙ</div>
-        <div class="map-area">
-            <div class="map-title">⚔️ Нажмите на метку, чтобы перейти к описанию битвы</div>
-            <div id="map"></div>
+        <div class="area-label">Карта Битв</div>
+        <div class="image-area" id="imageArea">
+            <img src="/static/map.png" alt="Карта битв Великой Отечественной Войны">
+            <div class="map-buttons">
+                <button class="battle-btn" data-battle="battle1">⚔️</button>
+                <button class="battle-btn" data-battle="battle2">⚔️️</button>
+                <button class="battle-btn" data-battle="battle3">⚔️️</button>
+                <button class="battle-btn" data-battle="battle4">⚔️️</button>
+                <button class="battle-btn" data-battle="battle5">⚔️</button>
+            </div>
         </div>
     </div>
     <div class="battle-card" id="battle1">
@@ -141,141 +146,18 @@
     </div>
 </div>
 <script>
-    script>
-    // Координаты сражений
-    const battles = [
-        {
-            id: 'battle1',
-            title: 'Битва за Москву',
-            commander: 'Г.К. Жуков',
-            coords: [55.7558, 37.6173],  // Москва
-            color: '#ffd700'
-        },
-        {
-            id: 'battle2',
-            title: 'Сталинградская битва',
-            commander: 'А.М. Василевский',
-            coords: [48.7080, 44.5133],  // Волгоград (Сталинград)
-            color: '#ffaa66'
-        },
-        {
-            id: 'battle3',
-            title: 'Оборона Ленинграда',
-            commander: 'Л.А. Говоров',
-            coords: [59.9311, 30.3609],  // Санкт-Петербург (Ленинград)
-            color: '#66ccff'
-        },
-        {
-            id: 'battle4',
-            title: 'Операция «Багратион»',
-            commander: 'К.К. Рокоссовский',
-            coords: [53.9023, 27.5615],  // Минск (центр Белоруссии)
-            color: '#66ff66'
-        },
-        {
-            id: 'battle5',
-            title: 'Берлинская операция',
-            commander: 'В.И. Чуйков',
-            coords: [52.5200, 13.4050],  // Берлин
-            color: '#ff6666'
-        }
-    ];
-
-    let map;
-    let placemarks = [];
-    function scrollToBattle(battleId) {
-        const element = document.getElementById(battleId);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }
-    ymaps.ready(function() {
-        // Создаём карту с центром по Москве
-        map = new ymaps.Map('map', {
-            center: [55.0, 60.0],  // Центр европейской части России
-            zoom: 4,
-            controls: ['zoomControl', 'fullscreenControl']
-        });
-
-        // Добавляем метки для каждого сражения
-        battles.forEach(function(battle) {
-            // Создаём содержимое балуна
-            const balloonContent = `
-                <div style="font-family: 'Segoe UI', sans-serif; padding: 5px;">
-                    <strong style="color: #1a472a;">⚔️ ${battle.title}</strong><br>
-                    <span style="color: #555;">Командующий: ${battle.commander}</span><br>
-                    <button onclick="scrollToBattle('${battle.id}')" style="
-                        margin-top: 10px;
-                        padding: 5px 12px;
-                        background: #1a472a;
-                        color: white;
-                        border: none;
-                        border-radius: 20px;
-                        cursor: pointer;
-                        font-size: 12px;
-                    ">📖 Подробнее о битве</button>
-                </div>
-            `;
-
-            // Создаём метку
-            const placemark = new ymaps.Placemark(
-                battle.coords,
-                {
-                    balloonContent: balloonContent,
-                    hintContent: `${battle.title} (${battle.commander})`
-                },
-                {
-                    preset: 'islands#icon',
-                    iconColor: battle.color,
-                    balloonPanelMaxMapArea: 0,
-                    openBalloonOnClick: true
-                }
-            );
-
-            // Добавляем обработчик клика по метке (открывает балун)
-            placemark.events.add('click', function() {
-                placemark.balloon.open();
-            });
-
-            map.geoObjects.add(placemark);
-            placemarks.push(placemark);
-        });
-
-        // Опционально: настройка границ карты, чтобы все метки были видны
-        if (placemarks.length > 0) {
-            const bounds = map.geoObjects.getBounds();
-            if (bounds) {
-                map.setBounds(bounds, { checkZoomRange: true, zoomMargin: 50 });
-            }
-        }
-    });
-
-    // Добавляем возможность клика по карточке для центрирования карты на метке
-    document.querySelectorAll('.battle-card').forEach(card => {
-        card.addEventListener('click', function(e) {
-            // Предотвращаем срабатывание, если клик был по ссылке или кнопке внутри
-            if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
-
-            const battleId = this.getAttribute('id');
-            const battle = battles.find(b => b.id === battleId);
-            if (battle && map) {
-                // Центрируем карту на координатах битвы
-                map.setCenter(battle.coords, 8, {
-                    duration: 500,
-                    easing: 'ease-out'
+    document.querySelectorAll('.battle-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const battleId = this.getAttribute('data-battle');
+            const targetElement = document.getElementById(battleId);
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
                 });
-                // Открываем балун соответствующей метки
-                const placemark = placemarks.find((pm, idx) => {
-                    const pmCoords = pm.geometry.getCoordinates();
-                    return pmCoords[0] === battle.coords[0] && pmCoords[1] === battle.coords[1];
-                });
-                if (placemark) {
-                    placemark.balloon.open();
-                }
             }
         });
     });
 </script>
-
 </body>
 </html>
