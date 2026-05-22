@@ -55,6 +55,91 @@ body {
     text-align: center;
     border: 2px dashed #ffd700;
     transition: 0.3s;
+    overflow: hidden;
+    position: relative;
+    min-height: 500px;
+}
+
+.image-area img {
+    position: relative;
+    left: -20px;
+    max-width: calc(100% + 20px);
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+}
+
+.map-buttons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.battle-btn {
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    border: 2px solid #ffd700;
+    border-radius: 50px;
+    padding: 10px 18px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffd966;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    white-space: nowrap;
+    position: absolute;
+}
+
+.battle-btn:hover {
+    background: #ffd700;
+    color: #1a1a1a;
+    transform: scale(1.05);
+    border-color: #fff;
+    box-shadow: 0 0 15px rgba(255,215,0,0.5);
+}
+
+.battle-btn[data-battle="battle1"] {
+    top: 15%;
+    left: 60%;
+}
+
+.battle-btn[data-battle="battle2"] {
+    top: 55%;
+    left: 80%;
+}
+
+.battle-btn[data-battle="battle3"] {
+    top: 4%;
+    left: 50%;
+}
+
+.battle-btn[data-battle="battle4"] {
+    top: 28%;
+    left: 40%;
+}
+
+.battle-btn[data-battle="battle5"] {
+    top: 30%;
+    left: 7%;
+}
+
+.image-area {
+    background: #2e2b1f;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    border: 2px dashed #ffd700;
+    transition: 0.3s;
 }
 
 .image-placeholder {
